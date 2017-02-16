@@ -1,7 +1,7 @@
 package org.after90.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.after90.repository.ESRepository;
+import org.after90.repository.ESRepositoryBack;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.cluster.health.ClusterHealthStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ESService {
     @Autowired
-    private ESRepository es;
+    private ESRepositoryBack es;
 
 
     /**

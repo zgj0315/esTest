@@ -74,7 +74,7 @@ public class ESRepository {
             public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
             }
         }).setBulkActions(5000).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
-                .setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(Integer.parseInt(strConcurrentRequests)).build();
+                .setFlushInterval(new TimeValue(1000L * 5L)).setConcurrentRequests(Integer.parseInt(strConcurrentRequests)).build();
     }
 
     // 创建模版
@@ -85,8 +85,9 @@ public class ESRepository {
             PutIndexTemplateRequest pitr = new PutIndexTemplateRequest(strTemplateNamePrefix)
                     .template(strTemplateNamePrefix + "*");
             //number_of_shards 机器数减一,number_of_replicas 备份1份就是两份
-            pitr.settings(new MapBuilder<String, Object>().put("number_of_shards", 4).put("number_of_replicas", 1)
-                    .put("refresh_interval", "1s").map());
+            //如果你用单机测试，这段需要注释掉
+//            pitr.settings(new MapBuilder<String, Object>().put("number_of_shards", 4).put("number_of_replicas", 1)
+//                    .put("refresh_interval", "1s").map());
             Map<String, Object> defaultMapping = new HashMap<String, Object>();
             // 关闭_all
             defaultMapping.put("_all", new MapBuilder<String, Object>().put("enabled", false).map());

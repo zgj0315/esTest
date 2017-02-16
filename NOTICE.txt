@@ -1,0 +1,2 @@
+# 该项目依赖的库的注意事项
+# Notices and attributions required by libraries that the project depends on

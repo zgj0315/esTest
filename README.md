@@ -7,3 +7,7 @@
 jdk: 1.8
 
 ElasticSearch: 2.3.3
+
+ElasticSearch
+---
+从官网下载es，版本为2.3.3（由于es的版本变化时，api也会有相应变化，本工程中的测试只针对2.3.3版本）

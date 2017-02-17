@@ -35,21 +35,14 @@ public class ESRepository {
     private Splitter splitter = Splitter.on(",").trimResults();
 
     public void buildClient() throws Exception {
-        log.info("strClusterName:{}, strTransportHostNames:{}", strClusterName, strTransportHostNames);
-
         Settings settings = Settings.builder()
                 .put("cluster.name", strClusterName).put("client.transport.sniff", true).build();
-//        Iterable<String> itTransportHostName = splitter.split(strTransportHostNames);
-//        client = new PreBuiltTransportClient(settings).addTransportAddress(
-//                new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
-//        for (String strTransportHostName : itTransportHostName) {
-//            client.addTransportAddress(
-//                    new InetSocketTransportAddress(InetAddress.getByName(strTransportHostName), 9300));
-//        }
-
-         client = new PreBuiltTransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
-
+        Iterable<String> itTransportHostName = splitter.split(strTransportHostNames);
+        client = new PreBuiltTransportClient(settings);
+        for (String strTransportHostName : itTransportHostName) {
+            client.addTransportAddress(
+                    new InetSocketTransportAddress(InetAddress.getByName(strTransportHostName), 9300));
+        }
     }
 
     public void bulidBulkProcessor() throws Exception {

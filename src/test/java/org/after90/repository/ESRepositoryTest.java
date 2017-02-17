@@ -16,12 +16,13 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  * @author <Authors name>
  * @version 1.0
- * @since <pre>Feb 16, 2017</pre>
+ * @since <pre>Feb 17, 2017</pre>
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @Slf4j
 public class ESRepositoryTest {
+
     @Autowired
     private ESRepository es;
 
@@ -33,13 +34,13 @@ public class ESRepositoryTest {
     public void after() throws Exception {
     }
 
-
     /**
      * Method: buildClient()
      */
     @Test
     public void testBuildClient() throws Exception {
         es.buildClient();
+        log.info("client is ok");
     }
 
     /**
@@ -47,17 +48,10 @@ public class ESRepositoryTest {
      */
     @Test
     public void testBulidBulkProcessor() throws Exception {
-//TODO: Test goes here... 
-/* 
-try { 
-   Method method = ESRepository.getClass().getMethod("bulidBulkProcessor"); 
-   method.setAccessible(true); 
-   method.invoke(<Object>, <Parameters>); 
-} catch(NoSuchMethodException e) { 
-} catch(IllegalAccessException e) { 
-} catch(InvocationTargetException e) { 
-} 
-*/
+        es.buildClient();
+        log.info("client is ok");
+        es.bulidBulkProcessor();
+        log.info("bulkProcessor is ok");
     }
 
     /**
@@ -65,17 +59,13 @@ try {
      */
     @Test
     public void testCloseClient() throws Exception {
-//TODO: Test goes here... 
-/* 
-try { 
-   Method method = ESRepository.getClass().getMethod("closeClient"); 
-   method.setAccessible(true); 
-   method.invoke(<Object>, <Parameters>); 
-} catch(NoSuchMethodException e) { 
-} catch(IllegalAccessException e) { 
-} catch(InvocationTargetException e) { 
-} 
-*/
+        es.buildClient();
+        log.info("client is ok");
+        es.bulidBulkProcessor();
+        log.info("bulkProcessor is ok");
+        es.closeBulkProcessor();
+        es.closeClient();
+
     }
 
     /**
@@ -83,17 +73,13 @@ try {
      */
     @Test
     public void testCloseBulkProcessor() throws Exception {
-//TODO: Test goes here... 
-/* 
-try { 
-   Method method = ESRepository.getClass().getMethod("closeBulkProcessor"); 
-   method.setAccessible(true); 
-   method.invoke(<Object>, <Parameters>); 
-} catch(NoSuchMethodException e) { 
-} catch(IllegalAccessException e) { 
-} catch(InvocationTargetException e) { 
-} 
-*/
+        es.buildClient();
+        log.info("client is ok");
+        es.bulidBulkProcessor();
+        log.info("bulkProcessor is ok");
+        es.closeBulkProcessor();
+        es.closeClient();
     }
+
 
 } 

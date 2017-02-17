@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  *
  * @author <Authors name>
  * @version 1.0
- * @since <pre>Feb 16, 2017</pre>
+ * @since <pre>Feb 17, 2017</pre>
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -34,20 +34,11 @@ public class ESClientAdminServiceTest {
     }
 
     /**
-     * Method: createIndex(String strIndex)
-     */
-    @Test
-    public void testCreateIndex() throws Exception {
-        esClientAdmin.createIndex("zhaogj");
-    }
-
-    /**
      * Method: clusterHealth()
      */
     @Test
     public void testClusterHealth() throws Exception {
         esClientAdmin.clusterHealth();
-
     }
 
 

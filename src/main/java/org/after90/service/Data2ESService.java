@@ -1,7 +1,7 @@
 package org.after90.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.after90.repository.ESRepository;
+import org.after90.repository.ESRepositoryBack;
 import org.elasticsearch.action.index.IndexRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 public class Data2ESService {
     @Autowired
-    private ESRepository es;
+    private ESRepositoryBack es;
 
     @Value("${es.index.strGuestIndex}")
     private String strGuestIndex;

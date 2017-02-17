@@ -2,7 +2,7 @@ package test.org.after90.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.after90.Application;
-import org.after90.service.ReadEsService;
+import org.after90.service.ESDocumentService;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
@@ -12,19 +12,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * ReadEsService Tester.
+ * ESDocumentService Tester.
  *
  * @author <Authors name>
  * @version 1.0
- * @since <pre>Feb 16, 2017</pre>
+ * @since <pre>Feb 17, 2017</pre>
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @Slf4j
-public class ReadEsServiceTest {
-
+public class ESDocumentServiceTest {
     @Autowired
-    private ReadEsService readES;
+    private ESDocumentService esDocument;
+
     @Before
     public void before() throws Exception {
     }
@@ -34,13 +34,35 @@ public class ReadEsServiceTest {
     }
 
     /**
-     * Method: readES()
+     * Method: index()
      */
     @Test
-    public void testReadES() throws Exception {
-        log.info("start ReadEsServiceTest");
-        readES.readES();
-        log.info("end ReadEsServiceTest");
+    public void testIndex() throws Exception {
+//TODO: Test goes here... 
+    }
+
+    /**
+     * Method: get()
+     */
+    @Test
+    public void testGet() throws Exception {
+//TODO: Test goes here... 
+    }
+
+    /**
+     * Method: delete()
+     */
+    @Test
+    public void testDelete() throws Exception {
+//TODO: Test goes here... 
+    }
+
+    /**
+     * Method: bulkProcessor()
+     */
+    @Test
+    public void testBulkProcessor() throws Exception {
+        esDocument.bulkProcessor();
     }
 
 

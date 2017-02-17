@@ -2,6 +2,7 @@ package org.after90.repository;
 
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -35,21 +36,14 @@ public class ESRepository {
     private Splitter splitter = Splitter.on(",").trimResults();
 
     public void buildClient() throws Exception {
-        log.info("strClusterName:{}, strTransportHostNames:{}", strClusterName, strTransportHostNames);
-
         Settings settings = Settings.builder()
                 .put("cluster.name", strClusterName).put("client.transport.sniff", true).build();
-//        Iterable<String> itTransportHostName = splitter.split(strTransportHostNames);
-//        client = new PreBuiltTransportClient(settings).addTransportAddress(
-//                new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
-//        for (String strTransportHostName : itTransportHostName) {
-//            client.addTransportAddress(
-//                    new InetSocketTransportAddress(InetAddress.getByName(strTransportHostName), 9300));
-//        }
-
-         client = new PreBuiltTransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
-
+        Iterable<String> itTransportHostName = splitter.split(strTransportHostNames);
+        client = new PreBuiltTransportClient(settings);
+        for (String strTransportHostName : itTransportHostName) {
+            client.addTransportAddress(
+                    new InetSocketTransportAddress(InetAddress.getByName(strTransportHostName), 9300));
+        }
     }
 
     public void bulidBulkProcessor() throws Exception {
@@ -65,8 +59,13 @@ public class ESRepository {
             @Override
             public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
             }
-        }).setBulkActions(5000).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
-                .setFlushInterval(new TimeValue(1000L * 5L)).setConcurrentRequests(1).build();
+        }).setBulkActions(10000)
+                .setBulkSize(new ByteSizeValue(5, ByteSizeUnit.MB))
+                .setFlushInterval(TimeValue.timeValueSeconds(5))
+                .setConcurrentRequests(1)
+                .setBackoffPolicy(
+                        BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 3))
+                .build();
     }
 
     public void closeClient() {
@@ -80,4 +79,5 @@ public class ESRepository {
             bulkProcessor.close();
         }
     }
+
 }

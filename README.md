@@ -10,12 +10,4 @@ ElasticSearch: 5.2.1
 
 ElasticSearch
 ---
-```shell
-cd ~
-cd work/software
-tar -xvf elasticsearch-5.2.1.tar.gz
-mv elasticsearch-5.2.1 ../
-cd ../elasticsearch-5.2.1
-#启动es
-bin/elasticsearch -Ecluster.name=qzt360-es -Enode.name=node_test
-```
+参照[ElasticSearch5.2.1](http://zgj0315.github.io/es/2017/02/17/elasticsearch521.html)

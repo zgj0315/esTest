@@ -22,6 +22,6 @@ public class StartRunnerComponent implements CommandLineRunner {
         //初始化ES连接信息
         es.buildClient();
         es.bulidBulkProcessor();
-
+        es.buildTemplate();
     }
 }

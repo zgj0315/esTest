@@ -20,8 +20,10 @@ public class StartRunnerComponent implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //初始化ES连接信息
+        log.info("start init es");
         es.buildClient();
         es.bulidBulkProcessor();
         es.buildTemplate();
+        log.info("end init es");
     }
 }

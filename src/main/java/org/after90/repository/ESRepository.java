@@ -15,7 +15,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -45,9 +45,12 @@ public class ESRepository {
 
     public void buildClient() throws Exception {
         Settings settings = Settings.builder()
-                .put("cluster.name", strClusterName).put("client.transport.sniff", true).build();
+                .put("cluster.name", strClusterName)
+                .put("client.transport.sniff", true)
+                .put("xpack.security.user", "elastic:changeme")//for x-pack
+                .build();
         Iterable<String> itTransportHostName = splitter.split(strTransportHostNames);
-        client = new PreBuiltTransportClient(settings);
+        client = new PreBuiltXPackTransportClient(settings);//for x-pack
         for (String strTransportHostName : itTransportHostName) {
             client.addTransportAddress(
                     new InetSocketTransportAddress(InetAddress.getByName(strTransportHostName), 9300));

@@ -38,7 +38,7 @@ public class ESDocumentServiceTest {
      */
     @Test
     public void testIndex() throws Exception {
-//TODO: Test goes here... 
+        esDocument.index();
     }
 
     /**

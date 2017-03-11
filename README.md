@@ -6,8 +6,12 @@
 ---
 jdk: 1.8
 
-ElasticSearch: 5.2.1
+ElasticSearch: 5.2.2
 
 ElasticSearch
 ---
-参照[ElasticSearch5.2.1](http://zgj0315.github.io/es/2017/02/17/elasticsearch521.html)
+参照[ElasticSearch5.2.2](http://zgj0315.github.io/es/2017/03/09/elasticsearch522setup.html)
+
+代码
+---
+压力测试，对ES集群进行调优

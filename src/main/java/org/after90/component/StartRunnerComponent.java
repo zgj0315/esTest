@@ -2,6 +2,7 @@ package org.after90.component;
 
 import lombok.extern.slf4j.Slf4j;
 import org.after90.repository.ESRepository;
+import org.after90.service.PressESService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 public class StartRunnerComponent implements CommandLineRunner {
     @Autowired
     private ESRepository es;
+    @Autowired
+    private PressESService pressES;
 
     @Override
     public void run(String... args) throws Exception {
@@ -25,5 +28,6 @@ public class StartRunnerComponent implements CommandLineRunner {
         es.bulidBulkProcessor();
         es.buildTemplate();
         log.info("end init es");
+        pressES.data2ES();
     }
 }

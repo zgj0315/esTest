@@ -44,14 +44,18 @@ public class ESRepository {
     private Splitter splitter = Splitter.on(",").trimResults();
 
     public void buildClient() throws Exception {
+        log.info("init settings");
         Settings settings = Settings.builder()
                 .put("cluster.name", strClusterName)
                 .put("client.transport.sniff", true)
                 .put("xpack.security.user", "elastic:changeme")//for x-pack
                 .build();
+        log.info("init clinet");
         Iterable<String> itTransportHostName = splitter.split(strTransportHostNames);
         client = new PreBuiltXPackTransportClient(settings);//for x-pack
+        log.info("init InetSocketTransportAddress");
         for (String strTransportHostName : itTransportHostName) {
+            log.info("init host: {}", strTransportHostName);
             client.addTransportAddress(
                     new InetSocketTransportAddress(InetAddress.getByName(strTransportHostName), 9300));
         }
@@ -73,7 +77,7 @@ public class ESRepository {
         }).setBulkActions(10000)
                 .setBulkSize(new ByteSizeValue(5, ByteSizeUnit.MB))
                 .setFlushInterval(TimeValue.timeValueSeconds(5))
-                .setConcurrentRequests(1)
+                .setConcurrentRequests(12)
                 .setBackoffPolicy(
                         BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 3))
                 .build();

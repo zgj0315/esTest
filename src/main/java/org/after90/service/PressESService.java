@@ -26,9 +26,9 @@ public class PressESService {
             json.put("strName", "张三" + i);
             json.put("strID", "1302222012020600" + i);
             json.put("dtCreate", new Date());
-            es.bulkProcessor.add(new IndexRequest("zhaogj_test12",
+            es.bulkProcessor.add(new IndexRequest("zhaogj_test24",
                     "type_test",
-                    "id_1_" + i).source(json));
+                    "id_" + i).source(json));
         }
         //这里是个坑！如果你不等会，直接退出会丢数据，或者flush一下
         try {

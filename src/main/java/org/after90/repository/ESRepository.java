@@ -105,6 +105,7 @@ public class ESRepository {
             //number_of_shards 机器数减一,number_of_replicas 备份1份就是两份
             //如果你用单机测试，这段需要注释掉
             //我有18个node，所以设置为18个，分配均匀的话，每个node上会有一个shard，外加一个备份，每个node上有两个shard
+            //分片数*副本数=集群数量
             pitr.settings(new MapBuilder<String, Object>().put("number_of_shards", 18).put("number_of_replicas", 1)
                     .put("refresh_interval", "1s").map());
             Map<String, Object> defaultMapping = new HashMap<String, Object>();

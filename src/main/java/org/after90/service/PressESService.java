@@ -29,7 +29,7 @@ public class PressESService {
                 json.put("strID", "1302222012020600" + i);
                 json.put("adstrID", "1302222012020600" + i);
                 json.put("dtCreate", new Date());
-                es.bulkProcessor.add(new IndexRequest("zhaogj_test03",
+                es.bulkProcessor.add(new IndexRequest("zhaogj_test01",
                         "type_test",
                         "id_" + j + "_" + i).source(json));
                 if (i % 1000000 == 0) {

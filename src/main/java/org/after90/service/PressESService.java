@@ -21,14 +21,22 @@ public class PressESService {
     private ESRepository es;
 
     public void data2ES() {
-        for (int i = 0; i < 2000000000; i++) {
-            Map<String, Object> json = new HashMap<String, Object>();
-            json.put("strName", "张三" + i);
-            json.put("strID", "1302222012020600" + i);
-            json.put("dtCreate", new Date());
-            es.bulkProcessor.add(new IndexRequest("zhaogj_test24",
-                    "type_test",
-                    "id_" + i).source(json));
+        long lStart = System.currentTimeMillis();
+        for (int j = 0; j < 200; j++) {
+            for (int i = 0; i < 2000000000; i++) {
+                Map<String, Object> json = new HashMap<String, Object>();
+                json.put("strName", "张三" + i);
+                json.put("strID", "1302222012020600" + i);
+                json.put("adstrID", "1302222012020600" + i);
+                json.put("dtCreate", new Date());
+                es.bulkProcessor.add(new IndexRequest("zhaogj_test03",
+                        "type_test",
+                        "id_" + j + "_" + i).source(json));
+                if (i % 1000000 == 0) {
+                    log.info("speed: {}/s", 1000000 * 1000 / (System.currentTimeMillis() - lStart));
+                    lStart = System.currentTimeMillis();
+                }
+            }
         }
         //这里是个坑！如果你不等会，直接退出会丢数据，或者flush一下
         try {

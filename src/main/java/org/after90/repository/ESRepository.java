@@ -74,10 +74,10 @@ public class ESRepository {
             @Override
             public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
             }
-        }).setBulkActions(10000)
-                .setBulkSize(new ByteSizeValue(5, ByteSizeUnit.MB))
-                .setFlushInterval(TimeValue.timeValueSeconds(5))
-                .setConcurrentRequests(24)
+        }).setBulkActions(5000)
+                .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
+                .setFlushInterval(TimeValue.timeValueSeconds(10))
+                .setConcurrentRequests(18)
                 .setBackoffPolicy(
                         BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 3))
                 .build();
@@ -104,7 +104,8 @@ public class ESRepository {
                     .template(strTemplateNamePrefix + "*");
             //number_of_shards 机器数减一,number_of_replicas 备份1份就是两份
             //如果你用单机测试，这段需要注释掉
-            pitr.settings(new MapBuilder<String, Object>().put("number_of_shards", 4).put("number_of_replicas", 1)
+            //我有18个node，所以设置为18个，分配均匀的话，每个node上会有一个shard，外加一个备份，每个node上有两个shard
+            pitr.settings(new MapBuilder<String, Object>().put("number_of_shards", 18).put("number_of_replicas", 1)
                     .put("refresh_interval", "1s").map());
             Map<String, Object> defaultMapping = new HashMap<String, Object>();
             // 关闭_all

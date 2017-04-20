@@ -25,7 +25,7 @@
 	<Loggers>
 		<!-- 全局配置 -->
 		<Root level="INFO">
-			<AppenderRef ref="Console" />
+			<AppenderRef ref="Routing" />
 		</Root>
 	</Loggers>
 </Configuration>

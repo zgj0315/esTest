@@ -3,7 +3,9 @@ package org.after90.service.mapping;
 import lombok.extern.slf4j.Slf4j;
 import org.after90.repository.ESRepository;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +23,11 @@ public class FieldDatatypesService {
     @Autowired
     private ESRepository es;
 
+    private String strIndex = "my_index1";
+    private String strType = "my_type";
+
 
     public void arrayDatatype() {
-        String strIndex = "my_index1";
-        String strType = "my_type";
         es.client.admin().indices().prepareDelete(strIndex);
 
         try {
@@ -62,6 +65,31 @@ public class FieldDatatypesService {
             es.bulkProcessor.add(new IndexRequest(strIndex,
                     strType,
                     "2").source(builder));
+            es.bulkProcessor.flush();
+        } catch (Exception e) {
+            log.error("", e);
+        }
+    }
+
+    public void ipDatatype() {
+        String strMapping = "{\n" +
+                "      \"properties\": {\n" +
+                "        \"ip_addr\": {\n" +
+                "          \"type\": \"ip\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "}";
+        es.delete(strIndex);
+        es.create(strIndex, 18, 1);
+        es.putMapping(strIndex, strType, strMapping);
+        try {
+            XContentBuilder builder = jsonBuilder()
+                    .startObject()
+                    .field("ip_addr", "192.168.1.1")
+                    .endObject();
+            es.bulkProcessor.add(new IndexRequest(strIndex,
+                    strType,
+                    "1").source(builder));
             es.bulkProcessor.flush();
         } catch (Exception e) {
             log.error("", e);

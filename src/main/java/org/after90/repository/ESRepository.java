@@ -2,6 +2,8 @@ package org.after90.repository;
 
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkProcessor;
@@ -140,4 +142,44 @@ public class ESRepository {
             iac.putTemplate(pitr);
         }
     }
+
+    //判断index是否存在
+    public boolean exists(String strIndex) {
+        IndicesExistsRequest request = new IndicesExistsRequest(strIndex);
+        IndicesExistsResponse response = client.admin().indices().exists(request).actionGet();
+        if (response.isExists()) {
+            return true;
+        }
+        return false;
+    }
+
+    //删除index
+    public void delete(String strIndex) {
+        if (exists(strIndex)) {
+            client.admin().indices().prepareDelete(strIndex).get();
+        }
+    }
+
+    //创建index
+    public void create(String strIndex, int nShards, int nReplicas) {
+        client.admin().indices().prepareCreate(strIndex)
+                .setSettings(Settings.builder()
+                        .put("index.number_of_shards", nShards)
+                        .put("index.number_of_replicas", nReplicas)
+                        .put("index.refresh_interval", "10s")
+                ).get();
+    }
+
+    //创建mapping
+    public void putMapping(String strIndex, String strType, String strMapping) {
+        try {
+            client.admin().indices().preparePutMapping(strIndex)
+                    .setType(strType)
+                    .setSource(strMapping)//这个方法被废弃了，有空了再来收拾它
+                    .get();
+        } catch (Exception e) {
+            log.error("", e);
+        }
+    }
+
 }

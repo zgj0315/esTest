@@ -33,12 +33,14 @@ public class FieldDatatypesServiceTest {
     public void after() throws Exception {
     }
 
-    /**
-     * Method: arrayDatatype()
-     */
     @Test
     public void testArrayDatatype() throws Exception {
         fieldDatatypes.arrayDatatype();
+    }
+
+    @Test
+    public void testIpDatatype() throws Exception {
+        fieldDatatypes.ipDatatype();
     }
 
 

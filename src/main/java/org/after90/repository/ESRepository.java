@@ -2,6 +2,8 @@ package org.after90.repository;
 
 import com.google.common.base.Splitter;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequest;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkProcessor;
@@ -44,14 +46,18 @@ public class ESRepository {
     private Splitter splitter = Splitter.on(",").trimResults();
 
     public void buildClient() throws Exception {
+        log.info("init settings");
         Settings settings = Settings.builder()
                 .put("cluster.name", strClusterName)
                 .put("client.transport.sniff", true)
                 .put("xpack.security.user", "elastic:changeme")//for x-pack
                 .build();
+        log.info("init clinet");
         Iterable<String> itTransportHostName = splitter.split(strTransportHostNames);
         client = new PreBuiltXPackTransportClient(settings);//for x-pack
+        log.info("init InetSocketTransportAddress");
         for (String strTransportHostName : itTransportHostName) {
+            log.info("init host: {}", strTransportHostName);
             client.addTransportAddress(
                     new InetSocketTransportAddress(InetAddress.getByName(strTransportHostName), 9300));
         }
@@ -70,10 +76,10 @@ public class ESRepository {
             @Override
             public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
             }
-        }).setBulkActions(10000)
-                .setBulkSize(new ByteSizeValue(5, ByteSizeUnit.MB))
-                .setFlushInterval(TimeValue.timeValueSeconds(5))
-                .setConcurrentRequests(1)
+        }).setBulkActions(5000)
+                .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
+                .setFlushInterval(TimeValue.timeValueSeconds(10))
+                .setConcurrentRequests(18)
                 .setBackoffPolicy(
                         BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 3))
                 .build();
@@ -100,7 +106,9 @@ public class ESRepository {
                     .template(strTemplateNamePrefix + "*");
             //number_of_shards 机器数减一,number_of_replicas 备份1份就是两份
             //如果你用单机测试，这段需要注释掉
-            pitr.settings(new MapBuilder<String, Object>().put("number_of_shards", 4).put("number_of_replicas", 1)
+            //我有18个node，所以设置为18个，分配均匀的话，每个node上会有一个shard，外加一个备份，每个node上有两个shard
+            //分片数*副本数=集群数量
+            pitr.settings(new MapBuilder<String, Object>().put("number_of_shards", 18).put("number_of_replicas", 1)
                     .put("refresh_interval", "1s").map());
             Map<String, Object> defaultMapping = new HashMap<String, Object>();
             // 关闭_all
@@ -134,4 +142,44 @@ public class ESRepository {
             iac.putTemplate(pitr);
         }
     }
+
+    //判断index是否存在
+    public boolean exists(String strIndex) {
+        IndicesExistsRequest request = new IndicesExistsRequest(strIndex);
+        IndicesExistsResponse response = client.admin().indices().exists(request).actionGet();
+        if (response.isExists()) {
+            return true;
+        }
+        return false;
+    }
+
+    //删除index
+    public void delete(String strIndex) {
+        if (exists(strIndex)) {
+            client.admin().indices().prepareDelete(strIndex).get();
+        }
+    }
+
+    //创建index
+    public void create(String strIndex, int nShards, int nReplicas) {
+        client.admin().indices().prepareCreate(strIndex)
+                .setSettings(Settings.builder()
+                        .put("index.number_of_shards", nShards)
+                        .put("index.number_of_replicas", nReplicas)
+                        .put("index.refresh_interval", "10s")
+                ).get();
+    }
+
+    //创建mapping
+    public void putMapping(String strIndex, String strType, String strMapping) {
+        try {
+            client.admin().indices().preparePutMapping(strIndex)
+                    .setType(strType)
+                    .setSource(strMapping)//这个方法被废弃了，有空了再来收拾它
+                    .get();
+        } catch (Exception e) {
+            log.error("", e);
+        }
+    }
+
 }

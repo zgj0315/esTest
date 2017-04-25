@@ -6,8 +6,5 @@
 ---
 jdk: 1.8
 
-ElasticSearch: 5.2.1
+ElasticSearch: 5.3.0
 
-ElasticSearch
----
-参照[ElasticSearch5.2.1](http://zgj0315.github.io/es/2017/02/17/elasticsearch521.html)

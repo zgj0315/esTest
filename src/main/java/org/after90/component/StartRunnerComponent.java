@@ -17,8 +17,6 @@ import org.springframework.stereotype.Component;
 public class StartRunnerComponent implements CommandLineRunner {
     @Autowired
     private ESRepository es;
-    @Autowired
-    private PressESService pressES;
 
     @Override
     public void run(String... args) throws Exception {
@@ -26,8 +24,8 @@ public class StartRunnerComponent implements CommandLineRunner {
         log.info("start init es");
         es.buildClient();
         es.bulidBulkProcessor();
-        es.buildTemplate();
-        log.info("end init es");
-        pressES.data2ES();
+//        es.buildTemplate();
+//        log.info("end init es");
+//        pressES.data2ES();
     }
 }

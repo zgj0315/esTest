@@ -24,9 +24,9 @@ import java.util.Map;
 public class ESDocumentService {
     @Autowired
     private ESRepository es;
-    @Value("${es.index.strGuestIndex}")
+
     private String strGuestIndex;
-    @Value("${es.index.strGuestType}")
+
     private String strGuestType;
 
     public void index() {

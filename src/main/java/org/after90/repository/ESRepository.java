@@ -17,6 +17,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -40,16 +41,13 @@ public class ESRepository {
     @Value("${es.strTransportHostNames}")
     private String strTransportHostNames;
 
-    @Value("${es.index.strTemplateNamePrefixs}")
-    private String strTemplateNamePrefixs;
-
     private Splitter splitter = Splitter.on(",").trimResults();
 
     public void buildClient() throws Exception {
         log.info("init settings");
         Settings settings = Settings.builder()
                 .put("cluster.name", strClusterName)
-                .put("client.transport.sniff", true)
+                .put("client.transport.sniff", false)//5.4.0版本设置为false，不然会告警，不知道为啥
                 .put("xpack.security.user", "elastic:changeme")//for x-pack
                 .build();
         log.info("init clinet");
@@ -99,6 +97,7 @@ public class ESRepository {
 
     // 创建模版
     public void buildTemplate() throws Exception {
+        String strTemplateNamePrefixs = "";
         Iterable<String> itTemplateNamePrefix = splitter.split(strTemplateNamePrefixs);
         IndicesAdminClient iac = client.admin().indices();
         for (String strTemplateNamePrefix : itTemplateNamePrefix) {
@@ -175,7 +174,7 @@ public class ESRepository {
         try {
             client.admin().indices().preparePutMapping(strIndex)
                     .setType(strType)
-                    .setSource(strMapping)//这个方法被废弃了，有空了再来收拾它
+                    .setSource(strMapping, XContentType.JSON)
                     .get();
         } catch (Exception e) {
             log.error("", e);

@@ -6,5 +6,5 @@
 ---
 jdk: 1.8
 
-ElasticSearch: 5.3.0
+ElasticSearch: 5.4.0
 

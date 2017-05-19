@@ -3,9 +3,7 @@ package org.after90.service.mapping;
 import lombok.extern.slf4j.Slf4j;
 import org.after90.repository.ESRepository;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
